@@ -5,4 +5,20 @@ class QueueItemsController < ApplicationController
     @queue_items = current_user.queue_items
   end  
 
+  def create
+    video = Video.find(params[:video_id])
+    queue_item = QueueItem.new(video: video, user_id: current_user.id, position: new_position)
+    if queue_item.save
+      redirect_to :my_queue
+    else
+      redirect_to video, notice: "This video is already in your queue"
+    end
+  end
+
+  private
+
+  def new_position
+    current_user.queue_items.count + 1
+  end
+
 end

@@ -33,3 +33,7 @@ user2 = Fabricate(:user)
 #Reviews
 review1 = Fabricate(:review, user: zac, video: v9)
 review2 = Fabricate(:review, user: user2, video: v9)
+
+#QueueItems
+queue_item1 = Fabricate(:queue_item, user: zac, video: v9, position: 1)
+queue_item2 = Fabricate(:queue_item, user: zac, video: v7, position: 2)
