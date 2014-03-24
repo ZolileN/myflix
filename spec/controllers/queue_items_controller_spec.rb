@@ -94,5 +94,38 @@ describe QueueItemsController do
       end
     end
   end
+
+  describe "POST update_queue" do
+    let(:fake_video1) { Fabricate(:video) }
+    let(:fake_video2) { Fabricate(:video) }
+
+    context 'with valid inputs and authenticated user' do
+      let(:fake_user) { Fabricate(:user) }
+      let(:queue_item1) { Fabricate(:queue_item, video: fake_video1, position: 1, user: fake_user) }
+      let(:queue_item2) { Fabricate(:queue_item, video: fake_video2, position: 2, user: fake_user) }
+
+      before { session[:user_id] = fake_user.id }
+      it "redirects to my_queue page" do
+        post :update_queue, queue_items: [{id: queue_item1.id, position: 2}, {id: queue_item2.id, position: 1}]
+        expect(response).to redirect_to :my_queue
+      end
+      it "reorders queue_items" do
+        post :update_queue, queue_items: [{id: queue_item1.id, position: 2}, {id: queue_item2.id, position: 1}]
+        expect(fake_user.queue_items).to eq([queue_item2, queue_item1])
+      end
+      it "normalizes the positions" do
+        
+      end
+    end
+    context 'with invalid inputs and authenticated user' do
+      
+    end
+    context 'with unauthenticated user' do
+      
+    end
+    context 'with queue items belonging to another user' do
+      
+    end
+  end
   
 end
