@@ -1,3 +1,3 @@
 Fabricator(:queue_item) do
-  position { 1 }
+  position { rand(1..5) }
 end
