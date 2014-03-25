@@ -31,4 +31,30 @@ describe QueueItem do
     end
   end
 
+  describe "#rating=" do
+    it "changes the rating if there is a rating set for that review" do
+      video = Fabricate(:video)
+      user = Fabricate(:user)
+      review = Fabricate(:review, video: video, user: user, rating: 1)
+      queue_item = Fabricate(:queue_item, video: video, user: user)
+      queue_item.rating = 3
+      expect(Review.first.rating).to eq(3)
+    end
+    it "removes the rating if there is one present on the review" do
+      video = Fabricate(:video)
+      user = Fabricate(:user)
+      review = Fabricate(:review, video: video, user: user, rating: 1)
+      queue_item = Fabricate(:queue_item, video: video, user: user)
+      queue_item.rating = nil
+      expect(Review.first.rating).to be_nil
+    end
+    it "creates a new review with a rating if there isn't one present" do
+      video = Fabricate(:video)
+      user = Fabricate(:user)
+      queue_item = Fabricate(:queue_item, video: video, user: user)
+      queue_item.rating = 3
+      expect(Review.first.rating).to eq(3)
+    end
+  end
+
 end
