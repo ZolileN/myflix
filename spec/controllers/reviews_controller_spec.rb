@@ -19,14 +19,14 @@ describe ReviewsController do
         it "creates a review associated with the signed in user" do
           expect(Review.first.user_id).to eq(user.id)
         end
-        it "redirects to the video show page" do
+        it "redirects to the video pshow page" do
           expect(response).to redirect_to video
         end
 
       end
 
       context "with invalid inputs" do
-        before { post :create, review: Fabricate.attributes_for(:review, content: nil), video_id: video.id }
+        before { post :create, review: Fabricate.attributes_for(:review, rating: nil), video_id: video.id }
         it "doesn't save the review" do
           expect(Review.count).to eq(0)
         end
@@ -39,7 +39,7 @@ describe ReviewsController do
         it "sets @reviews" do
           video = Fabricate(:video)
           review = Fabricate(:review, video_id: video.id)
-          post :create, review: {rating: 4 }, video_id: video.id
+          post :create, review: {rating: nil }, video_id: video.id
           expect(assigns(:reviews)).to match_array([review])
         end
       end
