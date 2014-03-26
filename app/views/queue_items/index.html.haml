@@ -18,12 +18,12 @@
               - @queue_items.each do |queue_item|
                 %tr
                   = hidden_field_tag "queue_items[][id]", queue_item.id
-                  %td= text_field_tag "queue_items[][position]", queue_item.position, class: "form-control"
+                  %td= text_field_tag "queue_items[][position]", queue_item.position, id: "video_#{queue_item.video.id}_queue_position", class: "form-control"
                   %td
                     = link_to queue_item.video_title, queue_item.video
                   %td
                     = button_to "Play", nil, class: "btn btn-default"
-                  %td= select_tag "queue_items[][rating]", options_for_video_reviews(queue_item.rating), include_blank: true, class: "form-group" 
+                  %td= select_tag "queue_items[][rating]", options_for_video_reviews(queue_item.rating), include_blank: true, class: "form-group"  
                   %td
                     - queue_item.categories.each do |category|
                       = link_to category.name, category
