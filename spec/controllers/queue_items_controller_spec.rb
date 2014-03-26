@@ -3,26 +3,25 @@ require 'spec_helper'
 describe QueueItemsController do
   describe "GET index" do
     it "sets the @queue_items for the current, logged in user" do
-      fake_user = Fabricate(:user)
-      session[:user_id] = fake_user.id
+      set_current_user
       video1 = Fabricate(:video)
       video2 = Fabricate(:video)
-      queue_item1 = Fabricate(:queue_item, video: video1, user: fake_user)
-      queue_item2 = Fabricate(:queue_item, video: video2, user: fake_user)
+      queue_item1 = Fabricate(:queue_item, video: video1, user: current_user)
+      queue_item2 = Fabricate(:queue_item, video: video2, user: current_user)
       get :index
       expect(assigns(:queue_items)).to match_array([queue_item1, queue_item2])
     end
-    it "redirects to the sign in page for unauthenticated users" do
-      get :index
-      expect(response).to redirect_to :sign_in
+
+    it_behaves_like "requires sign in" do
+      let(:action) { get :index }
     end
+
   end
 
   describe "POST create" do
     context "with authenticated user" do
-      let(:fake_user) { Fabricate(:user) }
       let(:fake_video) { Fabricate(:video) }
-      before { session[:user_id] = fake_user.id }
+      before { set_current_user }
       it "redirects to the My Queue path " do
         post :create, video_id: fake_video.id
         expect(response).to redirect_to :my_queue
@@ -37,31 +36,30 @@ describe QueueItemsController do
       end
       it "creates a queue item associated with the user" do
         post :create, video_id: fake_video.id
-        expect(QueueItem.first.user_id).to eq(fake_user.id)
+        expect(QueueItem.first.user_id).to eq(current_user.id)
       end
       it "puts the queue item at the end of the que list" do
         video2 = Fabricate(:video)
-        Fabricate(:queue_item, video: video2, user: fake_user)
+        Fabricate(:queue_item, video: video2, user: current_user)
         post :create, video_id: fake_video.id
         expect(QueueItem.last.position).to eq(2)
       end
       it "does not add a video to the queue if that video is already in the queue" do
-        Fabricate(:queue_item, video: fake_video, user: fake_user)
+        Fabricate(:queue_item, video: fake_video, user: current_user)
         post :create, video_id: fake_video.id
         expect(QueueItem.count).to eq(1)
       end
 
       it "redirects to the video page if the video is alread in the queue" do
-        Fabricate(:queue_item, video: fake_video, user: fake_user)
+        Fabricate(:queue_item, video: fake_video, user: current_user)
         post :create, video_id: fake_video.id
         expect(response).to redirect_to video_path(fake_video)
       end
 
     end
     context "with unauthenticated user" do
-      it "redirects to the sign in page" do
-        post :create, video_id: 3
-        expect(response).to redirect_to :sign_in
+      it_behaves_like "requires sign in" do
+        let(:action) { post :create, video_id: 3 }
       end
     end
   end
@@ -87,15 +85,14 @@ describe QueueItemsController do
       end
       it "can not delete the queue item for another user" do
         other_user = Fabricate(:user)
-        session[:user_id] = other_user.id
-        delete :destroy, id: fake_queue_item
+        other_queue_item = Fabricate(:queue_item, video: fake_video, user: other_user)
+        delete :destroy, id: other_queue_item
         expect(QueueItem.count).to eq(1)
       end
     end
     context 'with unauthenticated user' do
-      it "redirects unauthenticated users to sign in page" do
-        delete :destroy, id: fake_queue_item
-        expect(response).to redirect_to :sign_in
+      it_behaves_like "requires sign in" do
+        let(:action) { delete :destroy, id: fake_queue_item }
       end
     end
   end
@@ -145,9 +142,8 @@ describe QueueItemsController do
     context 'with unauthenticated user' do
       let(:queue_item1) { Fabricate(:queue_item, video: fake_video1, position: 1) }
       let(:queue_item2) { Fabricate(:queue_item, video: fake_video2, position: 2) }
-      it "redirects to the sign in page" do
-        post :update_queue, queue_items: [{id: queue_item1.id, position: 3}, {id: queue_item2.id, position: 2}]
-        expect(response).to redirect_to :sign_in
+      it_behaves_like "requires sign in" do
+        let(:action) { post :update_queue, queue_items: [{id: queue_item1.id, position: 3}, {id: queue_item2.id, position: 2}] }
       end
     end
     context 'with queue items belonging to another user' do
