@@ -9,6 +9,10 @@ describe User do
   it { should have_many(:following_relationships).class_name("Relationship").with_foreign_key('follower_id') }
   it { should have_many(:leading_relationships).class_name("Relationship").with_foreign_key('leader_id') }
 
+  it "generates a random token when the user is created " do
+    user = Fabricate(:user)
+    expect(user.token).to be_present
+  end
 
   describe "#queued_video?" do
     it "returns true if the video is already in the user's queue" do

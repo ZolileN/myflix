@@ -13,12 +13,14 @@ gem 'bcrypt-ruby'
 gem 'bootstrap_form', :git => "git://github.com/bootstrap-ruby/rails-bootstrap-forms"
 gem 'fabrication'
 gem 'faker'
+gem 'figaro'
 
 group :development do
   gem 'sqlite3'
   gem 'thin'
   gem "better_errors"
   gem "binding_of_caller"
+  gem "letter_opener"
 end
 
 group :test, :development do
