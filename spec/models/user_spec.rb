@@ -1,11 +1,13 @@
 require 'spec_helper'
 
 describe User do
-  it { should have_many(:reviews) }
+  it { should have_many(:reviews).order("created_at DESC") }
   it { should validate_presence_of(:email) }
   it { should validate_presence_of(:full_name) }
   it { should validate_uniqueness_of(:email) }
   it { should have_many(:queue_items).order("position") }
+  it { should have_many(:following_relationships).class_name("Relationship").with_foreign_key('follower_id') }
+  it { should have_many(:leading_relationships).class_name("Relationship").with_foreign_key('leader_id') }
 
 
   describe "#queued_video?" do
@@ -21,4 +23,20 @@ describe User do
       expect(fake_user.queued_video?(video)).to be_false 
     end
   end
+
+  describe "#follows?" do
+    it "returns true if the user is following the other user" do
+      user = Fabricate(:user)
+      other_user = Fabricate (:user)
+      relationship = Fabricate(:relationship, leader: other_user, follower: user)
+      expect(user.follows?(other_user)).to be_true
+    end
+
+    it "returns false if the user is not following the other user" do
+      user = Fabricate(:user)
+      other_user = Fabricate (:user)
+      expect(user.follows?(other_user)).to be_false
+    end
+  end
+  
 end
