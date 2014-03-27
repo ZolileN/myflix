@@ -21,4 +21,19 @@ describe User do
       expect(fake_user.queued_video?(video)).to be_false 
     end
   end
+
+  describe "#follows?" do
+    it "returns true if the user is following the other user" do
+      user = Fabricate(:user)
+      other_user = Fabricate (:user)
+      relationship = Fabricate(:relationship, leader: other_user, follower: user)
+      expect(user.follows?(other_user)).to be_true
+    end
+
+    it "returns false if the user is not following the other user" do
+      user = Fabricate(:user)
+      other_user = Fabricate (:user)
+      expect(user.follows?(other_user)).to be_false
+    end
+  end
 end

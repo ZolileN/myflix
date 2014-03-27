@@ -10,5 +10,12 @@ class RelationshipsController < ApplicationController
     redirect_to :people
   end
 
+  def create
+    follower = current_user
+    leader = User.find(params[:leader_id])
+    relationship = Relationship.new(follower: follower, leader: leader)
+    relationship.save unless follower == leader
+    redirect_to :people
+  end
 
 end
