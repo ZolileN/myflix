@@ -29,11 +29,18 @@ v11 = Video.create(title: "Monk", description: "Adrian Monk is a brilliant San F
 #Users
 zac = User.create(email: "zacclay@gmail.com", full_name: "Zac Clay", password: "password")
 user2 = Fabricate(:user)
+user3 = Fabricate(:user)
 
 #Reviews
 review1 = Fabricate(:review, user: zac, video: v9)
 review2 = Fabricate(:review, user: user2, video: v9)
+review2 = Fabricate(:review, user: user3, video: v9)
 
 #QueueItems
 queue_item1 = Fabricate(:queue_item, user: zac, video: v9, position: 1)
 queue_item2 = Fabricate(:queue_item, user: zac, video: v7, position: 2)
+queue_item4 = Fabricate(:queue_item, user: user2, video: v7, position: 1)
+
+#Relationships
+relationship1 = Fabricate(:relationship, follower: user3, leader: user2)
+relationship2 = Fabricate(:relationship, follower: zac, leader: user2)
