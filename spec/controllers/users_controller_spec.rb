@@ -17,6 +17,8 @@ describe UsersController do
       it "redirects to the sign in page" do
         expect(response).to redirect_to :sign_in
       end
+
+  
     end
     context 'with invalid input' do
       before { post :create, user: Fabricate.attributes_for(:user, email: nil) }
@@ -30,6 +32,28 @@ describe UsersController do
         expect(assigns(:user)).to be_instance_of(User)
       end
     end
+
+    context "welcome emails" do
+      after { ActionMailer::Base.deliveries.clear }
+      let(:user) { { email: "user@fake.com", password: "password", full_name: "Spunky McTesterton" } }
+      it "sends an email if there are valid inputs" do
+        post :create, user: user
+        expect(ActionMailer::Base.deliveries).not_to be_empty
+      end
+      it "sends email to correct email address if there are valid inputs" do
+        post :create, user: user
+        expect(ActionMailer::Base.deliveries.last.to).to eq([user[:email]])
+      end
+      it "sends email with correct body if there are valid inputs" do
+        post :create, user: user
+        expect(ActionMailer::Base.deliveries.last.body).to include("Welcome to MyFlix, #{user[:full_name]}")
+      end
+      it "does not send email if there are invalid inputs" do
+        post :create, user: { password: "password", full_name: "Spunky McTesterton" }
+        expect(ActionMailer::Base.deliveries).to be_empty
+      end
+    end
+
   end
   
   describe "GET show" do
