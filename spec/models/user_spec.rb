@@ -9,9 +9,8 @@ describe User do
   it { should have_many(:following_relationships).class_name("Relationship").with_foreign_key('follower_id') }
   it { should have_many(:leading_relationships).class_name("Relationship").with_foreign_key('leader_id') }
 
-  it "generates a random token when the user is created " do
-    user = Fabricate(:user)
-    expect(user.token).to be_present
+  it_behaves_like "tokeable" do
+    let(:object) { Fabricate(:user) }
   end
 
   describe "#queued_video?" do
@@ -40,6 +39,20 @@ describe User do
       user = Fabricate(:user)
       other_user = Fabricate (:user)
       expect(user.follows?(other_user)).to be_false
+    end
+  end
+
+  describe "#follow" do
+    it "follows another user" do
+      another_user = Fabricate(:user)
+      user = Fabricate(:user)
+      user.follow(another_user)
+      expect(user.follows?(another_user)).to be_true
+    end
+    it "does not follow oneself" do
+      user = Fabricate(:user)
+      user.follow(user)
+      expect(user.follows?(user)).to be_false
     end
   end
   

@@ -16,7 +16,7 @@ feature "User follows another user" do
 
     unfollow(leader)
     expect(page).not_to have_content(leader.full_name)
-
+    clear_email
   end
 
   def unfollow(user)

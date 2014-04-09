@@ -5,3 +5,9 @@ shared_examples "requires sign in" do
     expect(response).to redirect_to :sign_in
   end
 end
+
+shared_examples "tokeable" do
+  it "generates a random token when a new object is created" do
+    expect(object.token).to be_present
+  end
+end

@@ -1,0 +1,7 @@
+!!! 5
+%html(lang="en-US")
+  %body
+    %p Dear, #{@invitation.recipient_name}
+    %p #{@inviter.full_name} has invited you to join MyFlix!
+    %p= @invitation.message
+    %p= link_to "Join the Site!", register_with_token_url(@invitation.token) 
