@@ -12,6 +12,7 @@ feature "user signs in" do
     fill_in "Email Address", with: fake_user.email
     fill_in "Password", with: ""
     click_button "Sign in"
-    expect(page).to have_content "There is something wrong with your email or password." 
+    expect(page).to have_content "There is something wrong with your email or password."
+    clear_email 
   end
 end

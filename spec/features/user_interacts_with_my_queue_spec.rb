@@ -27,6 +27,7 @@ feature "User interacts with the queue" do
     expect_video_position(south_park, 1)
     expect_video_position(futurama, 2)
     expect_video_position(monk, 3)
+    clear_email
   end
 
   def expect_video_to_be_in_queue(video)
