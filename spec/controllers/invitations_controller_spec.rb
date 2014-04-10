@@ -58,6 +58,7 @@ describe InvitationsController do
         expect(Invitation.count).to eq(0)
       end
       it "does not send out email" do
+        ActionMailer::Base.deliveries.clear
         recipient = Fabricate(:user)
         set_current_user
         post :create, invitation: { recipient_email: recipient.email, message: "Hello there, check out this site!" }

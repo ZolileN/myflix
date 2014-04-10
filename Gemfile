@@ -14,6 +14,9 @@ gem 'bootstrap_form', :git => "git://github.com/bootstrap-ruby/rails-bootstrap-f
 gem 'fabrication'
 gem 'faker'
 gem 'figaro'
+gem 'sidekiq'
+gem 'unicorn'
+gem 'paratrooper'
 
 group :development do
   gem 'sqlite3'
