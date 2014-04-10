@@ -16,6 +16,7 @@ gem 'faker'
 gem 'figaro'
 gem 'sidekiq'
 gem 'unicorn'
+gem 'paratrooper'
 
 group :development do
   gem 'sqlite3'
