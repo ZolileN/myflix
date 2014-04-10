@@ -19,6 +19,7 @@ Myflix::Application.routes.draw do
     end
     resources :reviews, only: [:create]
   end
+
   resources :categories, except: [:destroy]
   resources :users, only: [:create, :show]
   resources :queue_items, only: [:create, :destroy]
@@ -28,4 +29,7 @@ Myflix::Application.routes.draw do
   resources :password_resets, only: [:show, :create]
   resources :invitations, only: [:new, :create]
 
+  namespace :admin do
+    resources :videos, only: [:new, :create]
+  end
 end 
