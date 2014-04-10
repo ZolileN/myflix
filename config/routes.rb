@@ -13,7 +13,7 @@ Myflix::Application.routes.draw do
   get 'expired_token', to: 'pages#expired_token'
   get 'register/:token', to: "users#new_with_invitation_token", as: 'register_with_token'
 
-  resources :videos, except: [:destroy] do
+  resources :videos, only: [:index, :show] do
     collection do
       get :search, to: "videos#search"
     end
