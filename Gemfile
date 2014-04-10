@@ -17,6 +17,7 @@ gem 'figaro'
 gem 'sidekiq'
 gem 'unicorn'
 gem 'paratrooper'
+gem "sentry-raven" #, :github => "getsentry/raven-ruby"
 
 group :development do
   gem 'sqlite3'
