@@ -18,6 +18,18 @@ def sign_in(a_user=nil)
   click_button "Sign in"
 end
 
+def clear_videos
+  Video.delete_all
+end
+
+def sign_admin_in(an_admin=nil)
+  user = an_admin || Fabricate(:admin)
+  visit sign_in_path
+  fill_in "Email Address", with: user.email
+  fill_in "Password", with: user.password
+  click_button "Sign in"
+end
+
 def sign_out
   visit sign_out_path
 end
