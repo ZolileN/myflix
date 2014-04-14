@@ -34,7 +34,7 @@ describe Admin::VideosController do
       it "creates a new video" do
         set_current_admin
         category = Fabricate(:category)
-        post :create, video: { title: "Fake Video", category_ids: [category.id], description: "Check out this show!" }
+        post :create, video: { title: "Fake Video", category_ids: category.id, description: "Check out this show!" }
         expect(category.videos.count).to eq(1) 
       end
       it "redirects to the new video page" do
