@@ -8,7 +8,6 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params) 
     if @user.valid?
-      StripeWrapper.set_api_key
       charge = StripeWrapper::Charge.create(
         :amount => 999,
         :card => params[:stripeToken], 
@@ -18,12 +17,14 @@ class UsersController < ApplicationController
         @user.save
         handle_invitation
         AppMailer.delay.send_welcome_email(@user.id)
+        flash[:success] = "Thank you for registering!"
         redirect_to :sign_in
       else
         flash[:error] = charge.error_message
         render :new
       end
     else
+      flash[:error] = "Invalid user information. Please check the errors below."
       render :new
     end
   end
@@ -36,7 +37,7 @@ class UsersController < ApplicationController
     invitation = Invitation.where(token: params[:token]).first
     if invitation
       @user = User.new(email: invitation.recipient_email)
-      @invitation_token = invitation.token
+      @invitation_token = ++invitation.token
       render :new
     else 
       redirect_to :expired_token
