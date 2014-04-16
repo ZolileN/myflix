@@ -9,13 +9,13 @@ class UsersController < ApplicationController
     @user = User.new(user_params) 
     if @user.save
       handle_invitation
-      Stripe.api_key = ENV['STRIPE_SECRET_KEY']
-      Stripe::Charge.create(
+      StripeWrapper.set_api_key
+
+      StripeWrapper::Charge.create(
         :amount => 999,
-        :currency => "usd",
         :card => params[:stripeToken], 
         :description => "Charge for MyFlix Subscription, #{@user.email}"
-      )
+        )
       AppMailer.delay.send_welcome_email(@user.id)
       redirect_to :sign_in
     else

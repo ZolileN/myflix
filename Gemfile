@@ -41,7 +41,9 @@ group :test do
   gem 'shoulda-matchers'
   gem 'capybara'
   gem 'launchy'
-  gem 'capybara-email'  
+  gem 'capybara-email'
+  gem 'vcr'
+  gem 'webmock'  
 end
 
 group :production do
