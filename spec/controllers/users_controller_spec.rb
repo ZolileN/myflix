@@ -11,6 +11,11 @@ describe UsersController do
   describe "POST create" do
     context 'with valid input' do
       after { ActionMailer::Base.deliveries.clear }
+      
+      before do 
+        StripeWrapper::Charge.stub(:create) 
+      end
+
       it "creates the user" do
         post :create, user: Fabricate.attributes_for(:user)
         expect(User.count).to eq(1)
@@ -55,6 +60,11 @@ describe UsersController do
     end
 
     context "welcome emails" do
+      
+      before do 
+        StripeWrapper::Charge.stub(:create) 
+      end
+
       after { ActionMailer::Base.deliveries.clear }
       let(:user) { { email: "user@fake.com", password: "password", full_name: "Spunky McTesterton" } }
       it "sends an email if there are valid inputs" do
