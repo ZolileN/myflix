@@ -37,3 +37,10 @@ end
 def visit_video_page_from_home(a_video)
   find("a[href='/videos/#{a_video.id}']").click
 end
+
+def enter_credit_card(number)
+  fill_in "Credit Card Number", with: number
+  fill_in "Security Code", with: "123"
+  select "6 - June", from: "date_month"
+  select "2018", from: "date_year"
+end
