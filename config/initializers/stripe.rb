@@ -8,4 +8,9 @@ StripeEvent.configure do |events|
     reference_id = data.id
     Payment.create(user: user, amount: amount, reference_id: reference_id)
   end
+  events.subscribe 'charge.failed' do |event|
+    data = event.data.object
+    user = User.where(customer_token: data.customer).first
+    user.deactivate!
+  end
 end

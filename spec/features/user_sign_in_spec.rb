@@ -6,6 +6,13 @@ feature "user signs in" do
     sign_in(fake_user)
     expect(page).to have_content fake_user.full_name 
   end
+  scenario "with deactivated user" do
+    fake_user = Fabricate(:user)
+    fake_user.deactivate!
+    sign_in(fake_user)
+    expect(page).not_to have_content fake_user.full_name
+    expect(page).to have_content("Your account has been suspended, please contact customer service.")  
+  end
   scenario "with invalid input" do
     fake_user = Fabricate(:user)
     visit sign_in_path
