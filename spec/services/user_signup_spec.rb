@@ -4,9 +4,9 @@ describe UserSignup do
   describe "#sign_up" do
     context 'valid personal info and valid card' do
       after { ActionMailer::Base.deliveries.clear }
-      let(:charge) { double(:charge, successful?: true) }
+      let(:customer) { double(:customer, successful?: true, customer_token: "abcefghijk") }
       before do 
-        StripeWrapper::Charge.should_receive(:create).and_return(charge) 
+        StripeWrapper::Customer.should_receive(:create).and_return(customer) 
       end
 
       it "creates the user" do
@@ -46,12 +46,17 @@ describe UserSignup do
         UserSignup.new(Fabricate.build(:user, email: "user@fake.com", full_name: "Spunky McTesterton")).sign_up("fake_stripe_token", nil)
         expect(ActionMailer::Base.deliveries.last.body).to include("Welcome to MyFlix, Spunky McTesterton")
       end
+
+      it "stores the customer token from stripe" do
+        UserSignup.new(Fabricate.build(:user)).sign_up("fake_stripe_token", nil)
+        expect(User.first.customer_token).to eq("abcefghijk")
+      end
     end
 
     context 'with valid personal info and declined card' do
-      let(:charge) { double(:charge, successful?: false, error_message: "Your card was declined")  }
+      let(:customer) { double(:customer, successful?: false, error_message: "Your card was declined")  }
       it "does not create a new user" do
-        StripeWrapper::Charge.stub(:create).and_return(charge)
+        StripeWrapper::Customer.stub(:create).and_return(customer)
         UserSignup.new(Fabricate.build(:user)).sign_up('1232132', nil)
         expect(User.count).to eq(0)
       end
@@ -63,7 +68,7 @@ describe UserSignup do
         expect(User.count).to eq(0)
       end
       it "does not charge the card" do
-        StripeWrapper::Charge.should_not_receive(:create)
+        StripeWrapper::Customer.should_not_receive(:create)
       end
       it "does not send email if there are invalid inputs" do
         expect(ActionMailer::Base.deliveries).to be_empty
