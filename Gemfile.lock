@@ -249,6 +249,9 @@ GEM
       json (~> 1.8.1)
       mime-types (~> 1.25)
       rest-client (~> 1.4)
+    stripe_event (1.1.0)
+      activesupport (>= 3.1)
+      stripe (~> 1.6)
     subexec (0.2.3)
     therubyracer (0.12.1)
       libv8 (~> 3.16.14.0)
@@ -320,6 +323,7 @@ DEPENDENCIES
   sidekiq
   sqlite3
   stripe
+  stripe_event
   therubyracer
   thin
   uglifier

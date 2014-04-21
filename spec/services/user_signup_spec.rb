@@ -4,7 +4,7 @@ describe UserSignup do
   describe "#sign_up" do
     context 'valid personal info and valid card' do
       after { ActionMailer::Base.deliveries.clear }
-      let(:customer) { double(:customer, successful?: true) }
+      let(:customer) { double(:customer, successful?: true, customer_token: "abcefghijk") }
       before do 
         StripeWrapper::Customer.should_receive(:create).and_return(customer) 
       end
@@ -45,6 +45,11 @@ describe UserSignup do
       it "sends email with correct body if there are valid inputs" do
         UserSignup.new(Fabricate.build(:user, email: "user@fake.com", full_name: "Spunky McTesterton")).sign_up("fake_stripe_token", nil)
         expect(ActionMailer::Base.deliveries.last.body).to include("Welcome to MyFlix, Spunky McTesterton")
+      end
+
+      it "stores the customer token from stripe" do
+        UserSignup.new(Fabricate.build(:user)).sign_up("fake_stripe_token", nil)
+        expect(User.first.customer_token).to eq("abcefghijk")
       end
     end
 
